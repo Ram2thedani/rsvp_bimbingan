@@ -32,7 +32,7 @@
                 <th>Kelas</th>
                 <th>Hadir</th>
                 <th>Tanggal Sesi</th>
-                <th>Aksi</th>
+
             </tr>
         </thead>
         <tbody>
@@ -57,7 +57,7 @@
                     </td>
 
                     <td>{{ $tanggal }}</td>
-                    <td></td>
+
                 </tr>
             @endforeach
         </tbody>

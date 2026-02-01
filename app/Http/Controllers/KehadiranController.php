@@ -14,23 +14,27 @@ class KehadiranController extends Controller
      */
     public function index(Request $request)
     {
-        $tanggal = $request->tanggal;
-
+        // 1. Ambil list sesi untuk dropdown (tetap di sini tidak masalah)
         $sesiList = Sesi::orderBy('tanggal')->get();
 
+        // 2. Tentukan $tanggal TERLEBIH DAHULU
+        $tanggal = $request->tanggal;
+
+        if (!$tanggal) {
+            // Jika tidak ada di request, ambil tanggal sesi pertama
+            $tanggal = Sesi::orderBy('tanggal')->first()?->tanggal;
+        }
+
+        // 3. Baru jalankan query Siswa dengan $tanggal yang sudah pasti ada isinya
         $siswa = Siswa::with(['kelas', 'kehadiran' => function ($q) use ($tanggal) {
+            // Pastikan relasi 'sesi' dan kolom 'tanggal' sesuai dengan database Anda
             $q->whereHas('sesi', function ($qs) use ($tanggal) {
                 $qs->where('tanggal', $tanggal);
             });
         }])->get();
-        if (!$tanggal) {
-            $tanggal = Sesi::orderBy('tanggal')->first()?->tanggal;
-        }
-
 
         return view('kehadiran.index', compact('siswa', 'tanggal', 'sesiList'));
     }
-
 
 
     /**
@@ -110,5 +114,10 @@ class KehadiranController extends Controller
         );
 
         return back();
+    }
+    public function detail($id)
+    {
+        $kehadiran = Kehadiran::find($id);
+        return view('kehadiran.detail', compact('kehadiran'));
     }
 }
