@@ -10,19 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::table('sesis', function (Blueprint $table) {
-            //
-        });
-    }
+{
+    Schema::table('sesis', function (Blueprint $table) {
+        $table->string('token')->unique()->after('id');
+    });
+}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('sesis', function (Blueprint $table) {
-            $table->string('token')->unique()->after('id');
-        });
-    }
+public function down(): void
+{
+    
+}
 };
+
+
+
