@@ -23,6 +23,12 @@ class RsvpController extends Controller
     public function create($token)
     {
         $sesi = Sesi::where('token', $token)->firstOrFail();
+
+        // ❌ token sudah tidak berlaku
+        if (! $sesi->isTokenValid()) {
+            abort(403, 'Token sesi sudah tidak berlaku');
+        }
+
         $siswa = Siswa::orderBy('nama')->get();
 
         return view('kehadiran.rsvp', compact('sesi', 'siswa'));
