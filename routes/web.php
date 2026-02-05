@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\RsvpController;
@@ -7,7 +8,7 @@ use App\Http\Controllers\SesiController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [KehadiranController::class, 'index']);
+Route::get('/konfirmasi', [KehadiranController::class, 'index']);
 Route::get('/detail', [KehadiranController::class, 'detail'])->name('kehadiran.detail');
 
 Route::resource('kelas', KelasController::class);
@@ -22,3 +23,6 @@ Route::get('/rsvp/{token}', [RsvpController::class, 'create'])
     ->name('rsvp.create');
 
 Route::post('/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
+Route::get('/', [DashboardController::class, 'index']);
+Route::get('/dashboard/kehadiran/{sesi}', [DashboardController::class, 'detail'])
+    ->name('dashboard.kehadiran.detail');

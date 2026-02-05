@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kehadiran;
 use App\Models\Sesi;
 use App\Models\Siswa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class KehadiranController extends Controller
@@ -12,29 +13,41 @@ class KehadiranController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
     public function index(Request $request)
     {
-        // 1. Ambil list sesi untuk dropdown (tetap di sini tidak masalah)
+        // Ambil semua sesi untuk dropdown
         $sesiList = Sesi::orderBy('tanggal')->get();
 
-        // 2. Tentukan $tanggal TERLEBIH DAHULU
+        // Ambil tanggal dari request
         $tanggal = $request->tanggal;
 
         if (!$tanggal) {
-            // Jika tidak ada di request, ambil tanggal sesi pertama
-            $tanggal = Sesi::orderBy('tanggal')->first()?->tanggal;
+            $today = Carbon::today();
+
+            // Cari sesi hari ini atau yang akan datang
+            $tanggal = Sesi::whereDate('tanggal', '>=', $today)
+                ->orderBy('tanggal')
+                ->value('tanggal');
+
+            // Jika semua sesi sudah lewat (opsional fallback)
+            if (!$tanggal) {
+                $tanggal = Sesi::orderBy('tanggal', 'desc')
+                    ->value('tanggal');
+            }
         }
 
-        // 3. Baru jalankan query Siswa dengan $tanggal yang sudah pasti ada isinya
+        // Query siswa berdasarkan tanggal terpilih
         $siswa = Siswa::with(['kelas', 'kehadiran' => function ($q) use ($tanggal) {
-            // Pastikan relasi 'sesi' dan kolom 'tanggal' sesuai dengan database Anda
             $q->whereHas('sesi', function ($qs) use ($tanggal) {
-                $qs->where('tanggal', $tanggal);
+                $qs->whereDate('tanggal', $tanggal);
             });
         }])->get();
 
         return view('kehadiran.index', compact('siswa', 'tanggal', 'sesiList'));
     }
+
 
 
     /**
