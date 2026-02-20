@@ -27,11 +27,13 @@ class Sesi extends Model
     // ✅ cek token masih valid atau tidak
     public function getIsTokenValidAttribute()
     {
-        return Carbon::today()->lt(Carbon::parse($this->tanggal));
+        $expiredAt = Carbon::parse($this->tanggal)->setTime(07, 0, 0);
+        return now()->lt($expiredAt);
     }
 
     public function isTokenValid(): bool
     {
-        return Carbon::today()->lt(Carbon::parse($this->tanggal));
+        $expiredAt = Carbon::parse($this->tanggal)->setTime(07, 0, 0);
+        return now()->lt($expiredAt);
     }
 }

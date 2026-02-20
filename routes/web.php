@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\SiswaController;
@@ -26,3 +27,12 @@ Route::post('/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
 Route::get('/', [DashboardController::class, 'index']);
 Route::get('/dashboard/kehadiran/{sesi}', [DashboardController::class, 'detail'])
     ->name('dashboard.kehadiran.detail');
+
+Route::get('/pembayaran', [PembayaranController::class, 'index'])
+    ->name('pembayaran.index');
+
+Route::get('/pembayaran/bayar/{id}', [PembayaranController::class, 'bayar'])
+    ->name('pembayaran.bayar');
+
+Route::post('/pembayaran/store', [PembayaranController::class, 'store'])
+    ->name('pembayaran.store');
